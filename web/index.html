@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AccessForAll</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="landing.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<div class="wrap">
+<header class="top" id="top">
+  <a class="brand" href="#top"><span class="mark" aria-hidden="true"></span>AccessForAll</a>
+  <nav aria-label="Page sections">
+    <ul>
+      <li><a href="#why">Why</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#who">Who it helps</a></li>
+      <li><a href="#roadmap">Roadmap</a></li>
+      <li><a class="btn primary" href="app/index.html">Try the demo</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main">
+<section class="hero" aria-labelledby="h1">
+  <div class="hero-copy">
+    <p class="eyebrow">Open-source browser extension</p>
+    <h1 id="h1">Make any website <span class="u">work for everyone.</span></h1>
+    <p class="lede">AccessForAll scans a page for the barriers that block blind, deaf and motor-impaired people, repairs what it can safely, and tells you what needs a human. Every change is listed, so nothing happens behind your back.</p>
+    <div class="row">
+      <a class="btn primary" href="app/index.html">Try the live demo</a>
+      <a class="btn" href="#how">See how it works</a>
+    </div>
+    <p class="fine">Free and open source. Built around WCAG 2.2.</p>
+  </div>
+
+  <div class="scorecard" role="group" aria-labelledby="scT">
+    <div class="sc-top">
+      <h2 id="scT" style="font-size:1.2rem">Demo shop audit</h2>
+      <div class="seg" role="radiogroup" aria-label="Show results">
+        <label><input type="radio" name="st" value="before" checked><span>Before</span></label>
+        <label><input type="radio" name="st" value="after"><span>After repair</span></label>
+      </div>
+    </div>
+    <div class="sc-num"><output id="scNum" aria-live="polite">10</output><span>/ 100</span></div>
+    <div class="sc-bar" aria-hidden="true"><span id="scFill" style="width:10%"></span></div>
+    <ul class="sc-rows" id="scRows">
+      <li><span class="lab">Visual</span><span class="track" aria-hidden="true"><i style="width:100%"></i></span><span class="pill bad">7 failing</span></li>
+      <li><span class="lab">Hearing</span><span class="track" aria-hidden="true"><i style="width:100%"></i></span><span class="pill bad">2 failing</span></li>
+      <li><span class="lab">Motor</span><span class="track" aria-hidden="true"><i style="width:100%"></i></span><span class="pill bad">4 failing</span></li>
+    </ul>
+    <p class="fine">Results from the thirteen rules in the interactive demo. After repair, two items stay marked for human review.</p>
+  </div>
+</section>
+
+<section class="sec" id="why" aria-labelledby="whyH">
+  <div class="sec-head">
+    <p class="eyebrow">The problem</p>
+    <h2 id="whyH">Most of the web still locks people out</h2>
+    <p>Fixing it by hand is slow, so it rarely gets done. Automation makes the common failures cheap to find and cheap to fix.</p>
+  </div>
+  <div class="facts">
+    <div class="fact"><b>1.3 billion</b><p>people live with a significant disability, about one in six worldwide, according to the World Health Organization.</p></div>
+    <div class="fact"><b>About 95%</b><p>of the top one million home pages had detectable WCAG failures in WebAIM’s annual survey.</p><a href="https://webaim.org/projects/million/" target="_blank" rel="noopener">WebAIM Million report</a></div>
+    <div class="fact"><b>Low contrast</b><p>is the most common failure that survey finds, year after year. It is also one of the easiest to repair.</p></div>
+  </div>
+</section>
+
+<section class="sec" id="how" aria-labelledby="howH">
+  <div class="sec-head">
+    <p class="eyebrow">How it works</p>
+    <h2 id="howH">From audit to verified fix in five steps</h2>
+    <p>Open an inaccessible site, find the problems, generate an accessible version, and check that it worked.</p>
+  </div>
+  <ol class="pipe">
+    <li><h3>Crawl</h3><span class="chip">Playwright</span><p>Loads the page, walks the real tab order and captures screenshots.</p></li>
+    <li><h3>Audit</h3><span class="chip">axe-core</span><p>Runs the standard rules plus custom checks for focus, target size, timers and support options.</p></li>
+    <li><h3>Perceive</h3><span class="chip">OCR</span><p>Reads text inside images so banners and product photos get useful alt text.</p></li>
+    <li><h3>Repair</h3><span class="chip">DOM patch</span><p>Applies safe fixes and flags anything that needs judgement, with a change list.</p></li>
+    <li><h3>Verify</h3><span class="chip">Re-audit</span><p>Scans again and recomputes the score, so each fix is checked.</p></li>
+  </ol>
+</section>
+
+<section class="sec" id="who" aria-labelledby="whoH">
+  <div class="sec-head">
+    <p class="eyebrow">Who it helps</p>
+    <h2 id="whoH">Three groups, specific checks</h2>
+    <p>Each group gets the rules that matter for them, not a generic score.</p>
+  </div>
+  <div class="aud">
+    <article aria-labelledby="a1">
+      <h3 id="a1">Visually impaired users</h3>
+      <ul>
+        <li>Contrast of at least 4.5:1 for text and 3:1 for large text, with no colour-only meaning</li>
+        <li>Text that scales to 200–300% without breaking the layout</li>
+        <li>Headings, landmarks and alt text for NVDA, JAWS and VoiceOver</li>
+        <li>Light, dark and high-contrast modes in built-in settings, not an overlay</li>
+      </ul>
+    </article>
+    <article aria-labelledby="a2">
+      <h3 id="a2">Hearing-impaired users</h3>
+      <ul>
+        <li>Synchronised captions and full transcripts for video and audio</li>
+        <li>Text-based support: chat, email and text, not phone alone</li>
+        <li>Plain, direct language with a readability check</li>
+      </ul>
+    </article>
+    <article aria-labelledby="a3">
+      <h3 id="a3">Motor-impaired users</h3>
+      <ul>
+        <li>Every control reachable and usable by keyboard, with a visible focus indicator</li>
+        <li>Large click targets, 44 pixels or more</li>
+        <li>No hard time limits: pause, extend or turn off</li>
+        <li>Short forms with clear errors and suggested fixes</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="ovH">
+  <div class="split">
+    <div class="copy">
+      <p class="eyebrow">Not an overlay</p>
+      <h2 id="ovH">Fixes you can read, review and keep</h2>
+      <p>Accessibility overlays paint a widget over the page and often get in the way of assistive technology. AccessForAll changes the markup itself, shows each change in a list, and marks anything generated, such as alt text, for a person to confirm.</p>
+      <p class="muted">Automated tools catch only part of what matters. Treat the report as a fast first pass, then test with real users and assistive technology.</p>
+    </div>
+    <div class="code">
+      <figure class="b"><figcaption><span>Before</span><span>keyboard cannot reach it</span></figcaption>
+<pre><code>&lt;img src="hero.png"&gt;
+&lt;div class="add" data-click&gt;Add to bag&lt;/div&gt;</code></pre></figure>
+      <figure class="a"><figcaption><span>After</span><span>reviewable change</span></figcaption>
+<pre><code>&lt;img src="hero.png"
+  alt="Summer sale. 40% off all sneakers."&gt;
+&lt;div class="add" role="button" tabindex="0"&gt;
+  Add to bag&lt;/div&gt;</code></pre></figure>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="roadmap" aria-labelledby="rdH">
+  <div class="sec-head">
+    <p class="eyebrow">Roadmap</p>
+    <h2 id="rdH">What exists and what comes next</h2>
+  </div>
+  <ul class="road">
+    <li><span class="pill ok">Built</span><p><strong>Interactive demo.</strong> Thirteen audit rules, auto-repair, screen reader view, tab order overlay and tools for each audience.</p></li>
+    <li><span class="pill warn">Planned</span><p><strong>Browser extension.</strong> The audit and repair engine packaged with a React popup, starting with Chromium browsers.</p></li>
+    <li><span class="pill warn">Planned</span><p><strong>Live OCR.</strong> Tesseract reading text in images, replacing the recorded results used in the demo.</p></li>
+    <li><span class="pill warn">Planned</span><p><strong>Command line for CI.</strong> A Playwright run that fails a build when the score drops.</p></li>
+  </ul>
+</section>
+
+<section class="sec" aria-labelledby="faqH">
+  <div class="sec-head"><p class="eyebrow">Questions</p><h2 id="faqH">Straight answers</h2></div>
+  <div class="faq">
+    <details><summary>Is this an accessibility overlay?</summary><p>No. Overlays add a widget on top of a page. AccessForAll edits the page’s own markup and lists every change so you can review it.</p></details>
+    <details><summary>Can it make a site fully compliant?</summary><p>No tool can. Automation finds and fixes many common failures, and flags the rest. Judgement calls such as alt text wording stay marked for review, and real-user testing is still needed.</p></details>
+    <details><summary>Does it change my live site?</summary><p>The extension patches the page in your own browser, so you can see the accessible version and export the list of changes. Applying them to your source code is up to you.</p></details>
+    <details><summary>What does it cost?</summary><p>It is designed as an open-source project, free to use and to inspect.</p></details>
+  </div>
+</section>
+
+<section class="cta" aria-labelledby="ctaH">
+  <h2 id="ctaH">See it fix a broken page in under a minute</h2>
+  <p class="lede">Scan the demo shop, generate the accessible version, and press Tab to try it with a keyboard.</p>
+  <a class="btn primary" href="app/index.html">Try the live demo</a>
+</section>
+</main>
+
+<footer class="foot">
+  <p>AccessForAll. Open source. Designed against WCAG 2.2 AA.</p>
+  <a href="#top">Back to top</a>
+</footer>
+</div>
+<script src="landing.js"></script>
+</body>
+</html>

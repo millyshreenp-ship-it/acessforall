@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AccessForAll Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axe-core/4.10.0/axe.min.js"></script>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<div class="wrap">
+<header class="top" id="top">
+  <a class="brand" href="#top"><span class="mark" aria-hidden="true"></span>AccessForAll</a>
+  <nav aria-label="Sections">
+    <ul>
+      <li><a href="#demo">Demo</a></li>
+      <li><a href="#live">Live scan</a></li>
+      <li><a href="#visual">Visual</a></li>
+      <li><a href="#hearing">Hearing</a></li>
+      <li><a href="#motor">Motor</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><button class="btn" id="setBtn" type="button" aria-expanded="false" aria-controls="settings">Display settings</button></li>
+    </ul>
+  </nav>
+</header>
+
+<section id="settings" class="settings" aria-labelledby="setH" hidden>
+  <div>
+    <h2 id="setH" style="font-size:1.5rem">Display settings</h2>
+    <p class="note">Saved in this browser. These are built-in preferences, not a script that paints an overlay over the page.</p>
+  </div>
+  <div class="set-grid">
+    <fieldset><legend>Colour mode</legend>
+      <div class="seg">
+        <label><input type="radio" name="mode-s" data-setting="mode" value="system"><span>Match system</span></label>
+        <label><input type="radio" name="mode-s" data-setting="mode" value="light"><span>Light</span></label>
+        <label><input type="radio" name="mode-s" data-setting="mode" value="dark"><span>Dark</span></label>
+        <label><input type="radio" name="mode-s" data-setting="mode" value="high"><span>High contrast</span></label>
+      </div>
+    </fieldset>
+    <div class="field">
+      <label for="tsRange">Text size <output id="tsOut">100%</output></label>
+      <input type="range" id="tsRange" data-setting="ts" min="100" max="300" step="25" value="100">
+      <span class="note">Up to 300%. The layout reflows instead of clipping.</span>
+    </div>
+    <fieldset><legend>Line spacing</legend>
+      <div class="seg">
+        <label><input type="radio" name="ls-s" data-setting="ls" value="1.6"><span>Normal</span></label>
+        <label><input type="radio" name="ls-s" data-setting="ls" value="1.9"><span>Relaxed</span></label>
+        <label><input type="radio" name="ls-s" data-setting="ls" value="2.2"><span>Wide</span></label>
+      </div>
+    </fieldset>
+    <fieldset><legend>Target size</legend>
+      <div class="seg">
+        <label><input type="radio" name="target-s" data-setting="target" value="44"><span>44 px</span></label>
+        <label><input type="radio" name="target-s" data-setting="target" value="56"><span>56 px</span></label>
+        <label><input type="radio" name="target-s" data-setting="target" value="72"><span>72 px</span></label>
+      </div>
+    </fieldset>
+    <div class="field">
+      <label class="check"><input type="checkbox" data-setting="motion"> Reduce motion</label>
+      <button class="btn small" id="setReset" type="button">Reset all settings</button>
+    </div>
+  </div>
+</section>
+
+<main id="main" tabindex="-1">
+<section class="hero" aria-labelledby="h1">
+  <p class="eyebrow">Open-source browser extension · WCAG 2.2</p>
+  <h1 id="h1">Find the barriers. <span class="u">Fix them in one click.</span></h1>
+  <p class="lede">AccessForAll audits any page for what blocks blind, deaf and motor-impaired people. It repairs what can be repaired safely, and flags what needs a human decision.</p>
+  <div class="row">
+    <a class="btn primary" href="#demo">Try the live demo</a>
+    <a class="btn" href="#how">How it works</a>
+  </div>
+  <ul class="aud">
+    <li><a href="#visual"><strong>Visual</strong><span>Contrast, text size, screen reader structure, display options</span></a></li>
+    <li><a href="#hearing"><strong>Hearing</strong><span>Captions, transcripts, text-based support, plain language</span></a></li>
+    <li><a href="#motor"><strong>Motor</strong><span>Keyboard access, large targets, no time limits, short forms</span></a></li>
+  </ul>
+</section>
+
+<section id="demo" class="sec" aria-labelledby="demoH">
+  <div class="sec-head">
+    <p class="eyebrow">Live demo</p>
+    <h2 id="demoH">Scan a broken shop, then repair it</h2>
+    <p>This fictional shop breaks thirteen common rules on purpose. The audit below runs on its real markup. Select a finding to locate it, then generate the accessible version and press Tab through the result.</p>
+  </div>
+  <div class="demo-bar">
+    <button class="btn primary" id="btnFix" type="button">Generate accessible version</button>
+    <button class="btn" id="btnScan" type="button">Scan again</button>
+    <button class="btn" id="btnTabs" type="button" aria-pressed="false">Show tab order</button>
+    <button class="btn" id="btnReset" type="button">Reset demo</button>
+  </div>
+  <p class="status" id="demoStatus" role="status"></p>
+  <div class="demo">
+    <div>
+      <div class="frame">
+        <div class="tabs" role="tablist" aria-label="Demo view">
+          <button class="tab" role="tab" id="tab-page" type="button" aria-selected="true" aria-controls="pane-page">Page</button>
+          <button class="tab" role="tab" id="tab-sr" type="button" aria-selected="false" aria-controls="pane-sr" tabindex="-1">Screen reader view</button>
+        </div>
+        <div role="tabpanel" id="pane-page" aria-labelledby="tab-page">
+          <div class="v-scroll" id="vScroll" tabindex="0" role="region" aria-label="Demo shop preview, fictional site">
+            <div class="v-content" id="vContent">
+              <div id="victim" class="v">
+                <div class="v-hdr" data-landmark="banner">
+                  <div class="v-logo">SoleMates</div>
+                  <div data-landmark="navigation">
+                    <a href="#" class="v-a">New in</a><a href="#" class="v-a">Men</a><a href="#" class="v-a">Women</a><a href="#" class="v-a">Sale</a>
+                  </div>
+                </div>
+                <div data-landmark="main">
+                  <img class="v-hero" data-src="hero" data-ocr="Summer sale. 40% off all sneakers. Ends Sunday.">
+                  <div class="v-h1">Summer Sale</div>
+                  <div class="v-lede">Fresh pairs for warm days. Free returns on every order.</div>
+                  <div class="v-offer" data-timer>Offer ends in <b>09:59</b></div>
+                  <div class="v-h2">New arrivals</div>
+                  <div class="v-grid">
+                    <div class="v-card"><img data-src="shoe1" data-ocr="Orange trail running shoe, side view"><div class="v-name">Trail Runner 2</div><div class="v-price">$89.00</div><div class="v-add" data-click>Add to bag</div></div>
+                    <div class="v-card"><img data-src="shoe2" data-ocr="Blue court sneaker, side view"><div class="v-name">Court Classic</div><div class="v-price">$74.00</div><div class="v-add" data-click>Add to bag</div></div>
+                  </div>
+                  <div class="v-media" data-media="video" data-click data-transcript="Narrator: At SoleMates we cut every sole by hand in our workshop. [sound of a press closing] Each pair takes about forty minutes to finish.">Watch: how we make our soles (2:14)</div>
+                  <p class="v-p">Not sure about sizing? Read our <a href="#" class="v-plain">returns policy</a> before you order.</p>
+                  <div class="v-news"><input class="v-in" type="text" placeholder="Your email"><button class="v-go" type="button">Go</button></div>
+                </div>
+                <div class="v-ftr" data-landmark="contentinfo">
+                  <div>Questions? Call 1800-000-0000, weekdays 9 to 5.</div>
+                  <div data-contact="phone-only">For shipping details <a href="#" class="v-a" data-context="Read our shipping information">click here</a>.</div>
+                </div>
+              </div>
+              <div id="tabLayer" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+        <div role="tabpanel" id="pane-sr" aria-labelledby="tab-sr" hidden>
+          <div class="sr-bar">
+            <button class="btn small" id="srSpeak" type="button">Read aloud</button>
+            <span class="note">What a screen reader announces, in order.</span>
+          </div>
+          <ol class="sr-list" id="srList" tabindex="0" aria-label="Screen reader announcements"></ol>
+        </div>
+      </div>
+      <div class="legend">
+        <span><span class="sw" aria-hidden="true"></span>Dashed outline: problem found</span>
+        <span id="tabCount"></span>
+      </div>
+      <p class="note" id="vEvent" role="status" style="margin-top:.5rem">Last action in the shop: none yet.</p>
+    </div>
+
+    <div class="report" aria-labelledby="repTitle">
+      <div class="score">
+        <div><h3 id="repTitle">Audit report</h3><p class="muted" id="repState">Before repair</p></div>
+        <div class="score-num"><output id="scoreNum" aria-label="Accessibility score">0</output><span>/ 100</span></div>
+      </div>
+      <div class="bar" aria-hidden="true"><span id="scoreFill" style="width:0%"></span></div>
+      <p id="repSummary"></p>
+      <p class="note">Select a finding to locate it on the page.</p>
+      <div id="findings"></div>
+      <p class="axe" id="axeLine"></p>
+      <details class="changes" id="changes" hidden>
+        <summary id="changesSum">What changed</summary>
+        <ol id="changeList"></ol>
+      </details>
+    </div>
+  </div>
+  <p class="note" style="margin-top:1.25rem;max-width:52rem">The rules run in your browser here. Alt text for the two product photos and the banner comes from recorded OCR results; the extension reads them with Tesseract. Generated alt text and link names are marked Review because a person should confirm them.</p>
+</section>
+
+<section id="live" class="sec" aria-labelledby="liveH">
+  <div class="sec-head">
+    <p class="eyebrow">Connected to the engine</p>
+    <h2 id="liveH">Scan a real page</h2>
+    <p>Send a web address or pasted HTML to the AccessForAll server. It audits the page in headless Chromium, proposes fixes, and re-tests every fix before marking it verified.</p>
+  </div>
+  <div class="live-grid">
+    <form id="liveForm" class="card" novalidate>
+      <fieldset><legend>What to scan</legend>
+        <div class="seg">
+          <label><input type="radio" name="liveSrc" value="url" checked><span>Web address</span></label>
+          <label><input type="radio" name="liveSrc" value="html"><span>Paste HTML</span></label>
+        </div>
+      </fieldset>
+      <div class="field" id="liveUrlWrap"><label for="liveUrl">Page address</label><input type="url" id="liveUrl" placeholder="https://example.com" autocomplete="off"><span class="note">Public sites only. The server blocks private addresses.</span></div>
+      <div class="field" id="liveHtmlWrap" hidden><label for="liveHtml">Page HTML</label><textarea id="liveHtml" rows="8" spellcheck="false"></textarea><span class="note">Scripts and form values are removed in your browser before anything is sent.</span></div>
+      <fieldset><legend>Fix mode</legend>
+        <div class="seg">
+          <label><input type="radio" name="liveMode" value="fast" checked><span>Fast, rules only</span></label>
+          <label><input type="radio" name="liveMode" value="thorough"><span>Thorough, adds AI</span></label>
+        </div>
+        <span class="note">Thorough writes alt text and labels with a model, so the server needs a Gemini API key.</span>
+      </fieldset>
+      <div class="row">
+        <button class="btn primary" id="liveGo" type="submit">Scan and fix</button>
+        <button class="btn" id="liveSample" type="button">Load sample page</button>
+      </div>
+      <p class="status" id="liveStatus" role="status"></p>
+      <details class="srv"><summary>Server settings <span id="srvState" class="pill review">Checking…</span></summary>
+        <div class="field"><label for="srvBase">API address</label><input type="text" id="srvBase" autocomplete="off" spellcheck="false"></div>
+        <div class="field"><label for="srvKey">API key</label><input type="text" id="srvKey" autocomplete="off" spellcheck="false"></div>
+        <button class="btn small" id="srvSave" type="button" style="justify-self:start">Save and test</button>
+      </details>
+    </form>
+
+    <div id="liveOut" class="report" hidden>
+      <h3 id="liveOutH" tabindex="-1">Server results</h3>
+      <p id="liveSum"></p>
+      <p class="note" id="liveKb"></p>
+      <div class="row">
+        <button class="btn small" id="liveRepHtml" type="button">Open HTML report</button>
+        <button class="btn small" id="liveRepJson" type="button">Download JSON report</button>
+      </div>
+      <ul class="flist lf-list" id="liveList" aria-label="Issues and proposed fixes"></ul>
+      <div id="livePrev" hidden>
+        <h4>Preview</h4>
+        <label class="check"><input type="checkbox" id="liveApply" checked> Apply verified fixes to the preview</label>
+        <p class="note" id="livePrevNote" role="status"></p>
+        <iframe id="liveFrame" class="live-frame" title="Preview of the scanned page" sandbox="allow-same-origin"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="visual" class="sec" aria-labelledby="visH">
+  <div class="sec-head">
+    <p class="eyebrow">For visually impaired users</p>
+    <h2 id="visH">Readable, scalable, and structured for screen readers</h2>
+    <p>Four requirements, each with a tool you can use right now.</p>
+  </div>
+  <div class="cards">
+    <article class="card" aria-labelledby="ccH">
+      <div class="card-h"><h3 id="ccH">Colour contrast</h3><span class="tag">WCAG 1.4.3 · 1.4.11</span></div>
+      <p class="note">At least 4.5:1 for normal text and 3:1 for large text. Never use colour alone to show status or links.</p>
+      <div class="cc-grid">
+        <div class="cc-pick"><label for="fgHex">Text colour</label><div class="row"><input type="color" id="fg" value="#8a8fa3" aria-label="Text colour picker"><input type="text" id="fgHex" value="#8a8fa3" maxlength="7" spellcheck="false" autocomplete="off"></div></div>
+        <div class="cc-pick"><label for="bgHex">Background</label><div class="row"><input type="color" id="bg" value="#ffffff" aria-label="Background colour picker"><input type="text" id="bgHex" value="#ffffff" maxlength="7" spellcheck="false" autocomplete="off"></div></div>
+      </div>
+      <div class="cc-prev" id="ccPrev"><strong>Trail Runner 2</strong><span>Lightweight, grippy, ready for the weekend. Free returns.</span></div>
+      <p><strong>Contrast ratio: <output id="ccRatio" class="mono">0:1</output></strong></p>
+      <table class="cc-table"><thead><tr><th scope="col">Requirement</th><th scope="col">Needs</th><th scope="col">Result</th></tr></thead><tbody id="ccRows"></tbody></table>
+      <div id="ccSug" class="cc-sug" hidden></div>
+      <button class="btn small" id="ccSwap" type="button" style="justify-self:start">Swap colours</button>
+    </article>
+
+    <article class="card" aria-labelledby="txH">
+      <div class="card-h"><h3 id="txH">Scalable text</h3><span class="tag">WCAG 1.4.4 · 1.4.10</span></div>
+      <p class="note">Text resizes to 200–300% without clipping or sideways scrolling. Drag the slider and watch the layout reflow.</p>
+      <div class="field"><label for="sampleScale">Sample text size <output id="sampleOut">100%</output></label><input type="range" id="sampleScale" min="100" max="300" step="25" value="100"></div>
+      <div class="sample" id="sample">
+        <h4>Court Classic</h4>
+        <p>Leather upper, cushioned sole. Pairs well with everything in your wardrobe.</p>
+        <div class="row"><strong>$74.00</strong><button class="btn" type="button">Add to bag</button><button class="btn" type="button">Save for later</button></div>
+      </div>
+      <button class="btn" id="applyScale" type="button" style="justify-self:start">Apply this size to the whole page</button>
+    </article>
+
+    <article class="card" aria-labelledby="srH">
+      <div class="card-h"><h3 id="srH">Screen reader support</h3><span class="tag">WCAG 1.3.1 · 2.4.1</span></div>
+      <p class="note">Proper headings, landmarks and alt text let NVDA, JAWS and VoiceOver users jump around. This is the outline of this very page, read from its own markup.</p>
+      <ul class="outline" id="outline" aria-label="Outline of this page"></ul>
+      <p class="note">For a broken page, open the demo's Screen reader view to hear what goes wrong.</p>
+    </article>
+
+    <article class="card" aria-labelledby="cuH">
+      <div class="card-h"><h3 id="cuH">Customisation options</h3><span class="tag">WCAG 1.4.8</span></div>
+      <p class="note">Light, dark and high-contrast modes, font sizing, line spacing and target size live in one preferences panel that is part of the page itself. Overlay widgets are avoided because they often break assistive technology.</p>
+      <p>Current: <strong id="curSet"></strong></p>
+      <button class="btn primary" id="openSet" type="button" style="justify-self:start">Open display settings</button>
+    </article>
+  </div>
+</section>
+
+<section id="hearing" class="sec" aria-labelledby="heaH">
+  <div class="sec-head">
+    <p class="eyebrow">For hearing-impaired users</p>
+    <h2 id="heaH">Nothing important lives only in sound</h2>
+    <p>Captions, transcripts, text-based support and plain wording.</p>
+  </div>
+  <div class="cards">
+    <article class="card" aria-labelledby="cpH">
+      <div class="card-h"><h3 id="cpH">Captions and transcripts</h3><span class="tag">WCAG 1.2.2 · 1.2.1</span></div>
+      <p class="note">Synchronised captions with speaker names and sound cues, plus a full transcript you can click to seek.</p>
+      <div class="stage" id="stage">
+        <p class="stage-label" aria-hidden="true">Demo timeline, no audio plays</p>
+        <div class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="cap" id="cap" aria-hidden="true"></div>
+      </div>
+      <div class="row">
+        <button class="btn primary" id="cPlay" type="button">Play demo</button>
+        <output id="cTime" class="mono">0:00 / 0:28</output>
+      </div>
+      <div class="field"><label for="cSeek">Seek</label><input type="range" id="cSeek" min="0" max="28" step="0.5" value="0"></div>
+      <div class="set-grid" style="gap:.5rem 1rem">
+        <label class="check"><input type="checkbox" id="cOn" checked> Captions on</label>
+        <div class="field"><label for="cSize">Caption size</label><select id="cSize"><option value="1">Medium</option><option value="1.25">Large</option><option value="1.6">Extra large</option></select></div>
+        <div class="field"><label for="cBg">Caption background</label><select id="cBg"><option value="solid">Solid black</option><option value="tr">Translucent</option></select></div>
+      </div>
+      <h4>Transcript</h4>
+      <ol class="trans" id="trans" aria-label="Transcript"></ol>
+    </article>
+
+    <article class="card" aria-labelledby="ctH">
+      <div class="card-h"><h3 id="ctH">Multiple contact methods</h3><span class="tag">Best practice</span></div>
+      <p class="note">Phone-only support shuts people out. Offer text-based options and let people pick how they hear back.</p>
+      <form id="ctForm" novalidate>
+        <fieldset class="methods"><legend>How should we reply?</legend>
+          <label class="check"><input type="radio" name="cm" value="chat" checked> Live chat, about 2 minutes</label>
+          <label class="check"><input type="radio" name="cm" value="sms"> Text message, about 10 minutes</label>
+          <label class="check"><input type="radio" name="cm" value="email"> Email, within 1 business day</label>
+          <label class="check"><input type="radio" name="cm" value="video"> Video call with a sign language interpreter</label>
+        </fieldset>
+        <div class="field" id="ctDetailWrap" style="margin-top:.9rem" hidden><label for="ctDetail" id="ctDetailL">Mobile number</label><input type="text" id="ctDetail" autocomplete="off"></div>
+        <div class="field" style="margin-top:.9rem"><label for="ctMsg">Your message</label><textarea id="ctMsg">My order has not arrived yet.</textarea></div>
+        <div class="row" style="margin-top:.9rem"><button class="btn primary" type="submit">Send message</button></div>
+      </form>
+      <p class="status" id="ctStatus" role="status"></p>
+      <p class="note">Support address: <code>support@accessforall.example</code></p>
+    </article>
+
+    <article class="card" aria-labelledby="plH">
+      <div class="card-h"><h3 id="plH">Clear language</h3><span class="tag">WCAG 3.1.5</span></div>
+      <p class="note">Plain, direct sentences help everyone, and matter most for people who read sign language as a first language.</p>
+      <div class="field"><label for="plIn">Text to check</label>
+        <textarea id="plIn">We are unable to facilitate the utilization of your account until the authentication procedure has been completed. Subsequently, you will be required to commence the verification of your credentials. Please endeavour to submit the necessary documentation at your earliest convenience.</textarea></div>
+      <div class="stat" id="plStat"></div>
+      <ul class="note" id="plHints" style="margin:0;padding-left:1.2rem"></ul>
+      <button class="btn" id="plFix" type="button" style="justify-self:start">Suggest plainer wording</button>
+      <div class="field" id="plOutWrap" hidden><label for="plOut">Plainer version</label><textarea id="plOut" readonly></textarea><span class="note" id="plOutNote"></span></div>
+    </article>
+  </div>
+</section>
+
+<section id="motor" class="sec" aria-labelledby="motH">
+  <div class="sec-head">
+    <p class="eyebrow">For motor-impaired users</p>
+    <h2 id="motH">Everything works without a mouse, and without a clock</h2>
+    <p>Keyboard access, generous targets, adjustable time and short forms.</p>
+  </div>
+  <div class="cards">
+    <article class="card" id="kbdCard" aria-labelledby="kbH">
+      <div class="card-h"><h3 id="kbH">Full keyboard navigation</h3><span class="tag">WCAG 2.1.1 · 2.4.7</span></div>
+      <p class="note">Every control works from the keyboard, with a focus indicator that is visible on any background. Tab into the toolbar, then use the arrow keys.</p>
+      <table class="keys"><tbody>
+        <tr><td><kbd>Tab</kbd> <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Move to the next or previous control</td></tr>
+        <tr><td><kbd>Enter</kbd> <kbd>Space</kbd></td><td>Activate a button or link</td></tr>
+        <tr><td><kbd>←</kbd> <kbd>→</kbd> <kbd>Home</kbd> <kbd>End</kbd></td><td>Move inside a toolbar</td></tr>
+      </tbody></table>
+      <div class="toolbar" id="tb" role="toolbar" aria-label="Text formatting demo">
+        <button class="btn small" type="button" data-fmt="b" aria-pressed="false">Bold</button>
+        <button class="btn small" type="button" data-fmt="i" aria-pressed="false">Italic</button>
+        <button class="btn small" type="button" data-fmt="u" aria-pressed="false">Underline</button>
+        <button class="btn small" type="button" data-fmt="l" aria-pressed="false">Large</button>
+        <button class="btn small" type="button" data-fmt="h" aria-pressed="false">Highlight</button>
+      </div>
+      <p class="fmt-sample" id="fmtSample">Tab here, then press an arrow key.</p>
+      <p>Last key: <output id="lastKey" class="mono">none yet</output></p>
+    </article>
+
+    <article class="card" aria-labelledby="tgH">
+      <div class="card-h"><h3 id="tgH">Large click targets</h3><span class="tag">WCAG 2.5.8 · 2.5.5</span></div>
+      <p class="note">WCAG 2.2 sets 24 px as the minimum and 44 px as the comfortable size. Pick a size; it applies to every control on this page.</p>
+      <fieldset><legend>Target size</legend>
+        <div class="seg">
+          <label><input type="radio" name="target-c" data-setting="target" value="44"><span>44 px</span></label>
+          <label><input type="radio" name="target-c" data-setting="target" value="56"><span>56 px</span></label>
+          <label><input type="radio" name="target-c" data-setting="target" value="72"><span>72 px</span></label>
+        </div>
+      </fieldset>
+      <div class="sizes" aria-hidden="true">
+        <figure><div class="sq" style="width:24px;height:24px"></div><figcaption>24 px minimum</figcaption></figure>
+        <figure><div class="sq" style="width:44px;height:44px"></div><figcaption>44 px</figcaption></figure>
+        <figure><div class="sq" id="sqCur"></div><figcaption id="sqCap">Your setting</figcaption></figure>
+      </div>
+      <div class="row">
+        <button class="btn" type="button" data-measure="a">Select</button><output class="mono" data-for="a"></output>
+        <button class="btn" type="button" data-measure="b">Add</button><output class="mono" data-for="b"></output>
+      </div>
+    </article>
+
+    <article class="card" aria-labelledby="tmH">
+      <div class="card-h"><h3 id="tmH">No strict time limits</h3><span class="tag">WCAG 2.2.1</span></div>
+      <p class="note">A checkout session may expire only if people can pause it, add time or turn the limit off, and get a warning at least 20 seconds ahead.</p>
+      <p class="clock" id="tmOut" aria-hidden="true">2:00</p>
+      <div class="row">
+        <button class="btn primary" id="tmStart" type="button">Start session</button>
+        <button class="btn" id="tmPause" type="button">Pause</button>
+        <button class="btn" id="tmAdd" type="button">Add 5 minutes</button>
+        <button class="btn" id="tmOff" type="button">Turn off limit</button>
+      </div>
+      <div class="hint" id="tmWarn" role="alert" hidden></div>
+      <p class="status" id="tmStatus" role="status">Session not started.</p>
+    </article>
+
+    <article class="card" aria-labelledby="fmH">
+      <div class="card-h"><h3 id="fmH">Simplified forms</h3><span class="tag">WCAG 3.3.1 · 3.3.3</span></div>
+      <p class="note">Three fields, autofill hints, and errors that explain the fix. Try <code>asha@gmial.com</code> or leave the name empty.</p>
+      <div id="fmWrap">
+        <form id="fm" novalidate>
+          <div id="errSum" class="err-sum" tabindex="-1" hidden></div>
+          <div class="field"><label for="fName">Full name</label><input type="text" id="fName" autocomplete="name" aria-describedby="e-name"><p class="err" id="e-name" hidden></p></div>
+          <div class="field" style="margin-top:.9rem"><label for="fEmail">Email</label><input type="email" id="fEmail" autocomplete="email" aria-describedby="e-email" value="asha@gmial.com"><p class="err" id="e-email" hidden></p><p id="sug" hidden></p></div>
+          <div class="field" style="margin-top:.9rem"><label for="fPhone">Phone <span class="muted" style="font-weight:400">(optional)</span></label><input type="tel" id="fPhone" autocomplete="tel" aria-describedby="e-phone"><p class="err" id="e-phone" hidden></p></div>
+          <div class="row" style="margin-top:1rem"><button class="btn primary" type="submit">Place order</button></div>
+        </form>
+      </div>
+      <div class="ok-box" id="fmOk" tabindex="-1" role="status" hidden></div>
+    </article>
+  </div>
+</section>
+
+<section id="how" class="sec" aria-labelledby="howH">
+  <div class="sec-head">
+    <p class="eyebrow">Under the hood</p>
+    <h2 id="howH">From audit to verified fix</h2>
+    <p>The same pipeline powers the live scan above, the extension popup and a command-line run for CI.</p>
+  </div>
+  <ol class="pipe">
+    <li><h3>Crawl</h3><p>Playwright loads the page, walks the real tab order and captures screenshots for the OCR step.</p></li>
+    <li><h3>Audit</h3><p>axe-core plus custom rules for focus visibility, target size, timers and contact options.</p></li>
+    <li><h3>Perceive</h3><p>OCR reads text inside images, so banners and product shots get meaningful alt text.</p></li>
+    <li><h3>Repair</h3><p>Safe fixes patch the DOM. Anything that needs judgement is marked for review, with a change list.</p></li>
+    <li><h3>Verify</h3><p>The page is audited again and the score is recomputed, so every fix is checked, not assumed.</p></li>
+  </ol>
+  <ul class="stack" aria-label="Technology">
+    <li>JavaScript</li><li>React</li><li>Playwright</li><li>axe-core</li><li>Tesseract OCR</li>
+  </ul>
+</section>
+</main>
+
+<footer class="foot">
+  <p>AccessForAll is open source. This interface is designed against WCAG 2.2 AA.</p>
+  <a href="#top">Back to top</a>
+</footer>
+</div>
+<script src="config.js"></script>
+<script src="app.js"></script>
+<script src="live.js"></script>
+</body>
+</html>
